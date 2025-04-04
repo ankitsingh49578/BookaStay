@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookaStay</title>
+</head>
+<body>
+    <h3>Create New Listing: </h3>
+    <form method="POST" action="/listings">
+        <input type="text" placeholder="Enter title" name="listing[title]"><br><br>
+        <textarea rows="3" name="listing[description]" placeholder="Enter your details here..."></textarea><br><br>
+        <input type="text" placeholder="Image URL/Link here" name="listing[image]"><br><br>
+        <input type="number" placeholder="Enter price" name="listing[price]"><br><br>
+        <input type="text" placeholder="Enter location" name="listing[location]"><br><br>
+        <input type="text" placeholder="Enter country" name="listing[country]"><br><br>
+        <button>Save</button>
+    </form>
+</body>
+</html>
