@@ -50,7 +50,7 @@ body {
 }
 
 /* Card */
-.card{
+.listing-card{
     border: none !important;
     margin-bottom: 2rem;
 }
@@ -99,4 +99,11 @@ body {
 .edit-btn{
     background-color: purple !important;
     border: none !important;
+}
+
+/* review card */
+.stars{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }

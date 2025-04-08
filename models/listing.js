@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Review = require("./review.js"); // import the Review model to use in the post middleware
 
 const listingSchema = new Schema({
   title: {
@@ -18,6 +19,21 @@ const listingSchema = new Schema({
   price: Number,
   location: String,
   country: String,
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,    // ObjectId type for the review
+      ref: "Review",    // reference to the Review model
+    }  
+  ]
 });
+
+// Middleware to delete the reviews when the listing is deleted (post mongoose middleware)
+// The findOneAndDelete Mongoose operation internally triggers this middleware.
+listingSchema.post("findOneAndDelete", async function (listing) {
+  if(listing){
+    await Review.deleteMany({_id: {$in: listing.reviews}}); // delete all the reviews that are in the listing
+  }
+});
+
 const Listing = mongoose.model("Listing", listingSchema);
 module.exports = Listing;

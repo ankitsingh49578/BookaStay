@@ -7,14 +7,15 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
-const {listingSchema} = require('./schema.js');
+const { listingSchema, reviewSchema } = require("./schema.js"); // for listing validation (server-side validation using joi package)
+const Review = require("./models/review.js");
 
 // Connection with DataBase
 const MONGO_URL = "mongodb://127.0.0.1:27017/bookastay";
 main()
   .then(() => {
     console.log("connected to DB");
-  }) 
+  })
   .catch((err) => console.log(err));
 
 async function main() {
@@ -30,22 +31,31 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
-// Home Route
-app.get("/", (req, res) => {
-  res.send("Hey, This is Home page");
-});
+// // Home Route
+// app.get("/", (req, res) => {
+//   res.send("Hey, This is Home page");
+// });
 
-
-// middleware for schema validation 
-const validateListing = (req, res, next) =>{
-  let {error} = listingSchema.validate(req.body);
-  if(error){
-    let errMsg = error.details.map((el)=>el.message).join(",");
+// middleware for listing schema validation
+const validateListing = (req, res, next) => {
+  let { error } = listingSchema.validate(req.body);
+  if (error) {
+    let errMsg = error.details.map((el) => el.message).join(",");
     throw new ExpressError(400, errMsg);
-  }else{
+  } else {
     next();
   }
-}
+};
+// middleware for review schema validation
+const validateReview = (req, res, next) => {
+  let { error } = reviewSchema.validate(req.body);
+  if (error) {
+    let errMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(400, errMsg);
+  } else {
+    next();
+  }
+};
 
 // Index Route
 app.get(
@@ -63,7 +73,8 @@ app.get("/listings/new", (req, res) => {
 
 // Create New Route
 app.post(
-  "/listings", validateListing,          
+  "/listings",
+  validateListing,
   wrapAsync(async (req, res, next) => {
     // const {title, description, image, price, location, country} = req.body;
     const newListing = new Listing(req.body.listing);
@@ -77,7 +88,7 @@ app.get(
   "/listings/:id",
   wrapAsync(async (req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id);
+    const listing = await Listing.findById(id).populate("reviews"); // populating the reviews field in the listing
     res.render("listings/show.ejs", { listing });
   })
 );
@@ -94,7 +105,8 @@ app.get(
 
 // Update Route
 app.put(
-  "/listings/:id", validateListing,
+  "/listings/:id",
+  validateListing,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     const editedListing = req.body.listing;
@@ -112,8 +124,36 @@ app.delete(
   "/listings/:id",
   wrapAsync(async (req, res) => {
     let { id } = req.params;
-    await Listing.findByIdAndDelete(id);
+    await Listing.findByIdAndDelete(id); // when this findByIdAndDelete is called, then the listing will be deleted and the post middleware of listingSchema will be called and all the reviews associated with it will also be deleted
     res.redirect("/listings");
+  })
+);
+
+// Post Review Route (this route should come after the Show Route)
+app.post(
+  "/listings/:id/reviews",
+  validateReview,
+  wrapAsync(async (req, res) => {
+    let listing = await Listing.findById(req.params.id);
+    let newReview = new Review(req.body.review); // review is array of fields in the form
+    listing.reviews.push(newReview); // pushing the new review into the listing
+    await newReview.save();
+    await listing.save(); // saving the listing with the new review
+
+    console.log("New Review was added to the listing");
+    res.redirect(`/listings/${listing._id}`);
+  })
+);
+
+// Delete Review Route
+app.delete(
+  "/listings/:id/reviews/:reviewId",
+  wrapAsync(async (req, res) => {
+    let { id, reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } }); // removing the review id from the listing
+    await Review.findByIdAndDelete(reviewId); // deleting the review from the review collection
+
+    res.redirect(`/listings/${id}`);
   })
 );
 
@@ -137,9 +177,9 @@ app.use((req, res, next) => {
 
 // error handling middleware
 app.use((err, req, res, next) => {
-  let { statusCode=500, message="Something Went Wrong!" } = err;
+  let { statusCode = 500, message = "Something Went Wrong!" } = err;
   // res.status(statusCode).send(message);
-  res.status(statusCode).render('error.ejs', {message});
+  res.status(statusCode).render("error.ejs", { message });
 });
 
 app.listen(3000, () => {
