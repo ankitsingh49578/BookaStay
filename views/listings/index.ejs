@@ -1,37 +1,24 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookaStay</title>
-</head> -->
 <% layout('/layouts/boilerplate') %>
-
-    <body>
-        <br>
-        <h3>All Listings</h3>
-        <br>
-        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
-            <%for(let listing of allListings){ %>
-                <a href="/listings/<%=listing._id %>" class="listing-link">
-                    <div class="card listing-card col">
-                        <img src="<%= listing.image %>" class="card-img-top mb-2" alt="listing_img" style="height: 20rem;">
-                        <div class="card-body">
-                            <p class="card-text">
-                                <b><%= listing.title %></b><br>
-                                <%let cost = listing.price;%>
+    <h3 class="mb-4 mt-3">All Listings</h3>
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+        <%for(let listing of allListings){ %>
+            <a href="/listings/<%=listing._id %>" class="listing-link">
+                <div class="card listing-card col">
+                    <img src="<%= listing.image %>" class="card-img-top mb-2" alt="listing_img" style="height: 20rem;">
+                    <div class="card-body">
+                        <p class="card-text">
+                            <b>
+                                <%= listing.title %>
+                            </b><br>
+                            <%let cost=listing.price;%>
                                 <%if(!cost || isNaN(cost)){%>
                                     &#8377; <%=cost%>
-                                <%} else { %>
-                                    &#8377; <%= cost.toLocaleString("en-IN") %> night
-                                <%}%>
-                            </p>
-                        </div>
+                                        <%} else { %>
+                                            &#8377; <%= cost.toLocaleString("en-IN") %> night
+                                                <%}%>
+                        </p>
                     </div>
-                </a>
-                <%}%>
-        </div>
-    </body>
-
-    <!-- </html> -->
+                </div>
+            </a>
+            <%}%>
+    </div>
