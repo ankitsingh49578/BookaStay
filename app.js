@@ -5,13 +5,14 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
-const listings = require("./routes/listing.js");
-const reviews = require("./routes/review.js");
+const listingRouter = require("./routes/listing.js");
+const reviewRouter = require("./routes/review.js");
 const session = require('express-session');       // for session management
 const flash = require('connect-flash');         // for flash messages
 const passport = require('passport');       // for authentication (passportjs.org)
 const LocalStrategy = require('passport-local'); // for local authentication 
 const User = require('./models/user.js'); 
+const userRouter = require("./routes/user.js"); // for user model (user.js) 
 
 
 // Connection with DataBase
@@ -62,28 +63,24 @@ passport.use(new LocalStrategy(User.authenticate())); // for local authenticatio
 passport.serializeUser(User.serializeUser()); // for session management (all the information of a user is stored in session is called serialization)
 passport.deserializeUser(User.deserializeUser()); // for session management (all the info. of a user is retrieved (removed) from session (once session is finished) is called deserialization)
 
+// locals can be used anywhere in the app (in all the views) (it is used to pass data to all the views)
 app.use((req, res, next) => {
   res.locals.success = req.flash("success"); // flash message for success
   res.locals.error = req.flash("error"); // flash message for error
+  res.locals.currUser = req.user;   // current user (if logged in) (req.user is set by passport)
   // console.log(res.locals.success);
   next();
 });
 
-app.get('/demouser', async(req, res)=>{
-  let fakeUser = new User({
-    email: "fake@gmail.com",
-    username: "fake-user",       // we didn't add username in the model but still it will work because of passport-local-mongoose
-  });
-// for storing(registering) the fake-user
-  let registeredUser = await User.register(fakeUser, "ThisIsPassword");  //{user, password}
-  res.send(registeredUser);
-});
-
 // listing routes
-app.use('/listings', listings);     // will use listing.js
+app.use('/listings', listingRouter);     // will use listing.js
 
 // Review Routes
-app.use('/listings/:id/reviews', reviews)
+app.use('/listings/:id/reviews', reviewRouter); // will use review.js 
+
+// User Routes
+app.use('/', userRouter); // for user routes (user.js)
+
 
 app.use((req, res, next) => {
   next(new ExpressError(404, "Page Not Found!"));

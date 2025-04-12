@@ -1,106 +1,55 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync.js");
-const ExpressError = require("../utils/ExpressError.js");
-const { listingSchema } = require("../schema.js"); // for listing validation (server-side validation using joi package)
 const Listing = require("../models/listing.js");
+const { isLoggedIn, validateListing, isOwner } = require("../middleware.js"); // for authentication (isLoggedIn middleware)
 
-
-// middleware for listing schema validation
-const validateListing = (req, res, next) => {
-  let { error } = listingSchema.validate(req.body);
-  if (error) {
-    let errMsg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(400, errMsg);
-  } else {
-    next();
-  }
-};
-
+const listingController = require("../controllers/listings.js"); // for listing controller
 // app. is replaced with router. (router object also have all the methods like get, post, delete, update)
 
 // Index Route
-router.get(             
-  "/",
-  wrapAsync(async (req, res) => {
-    const allListings = await Listing.find({});
-    res.render("listings/index.ejs", { allListings });
-  })
-);
+router.get("/", wrapAsync(listingController.index));    // listingController.index is a function that will be called when the route is hit. It will get all the listings from the database and render the index.ejs file with the listings data.
 
 // New Route (this route should come before the Show Route)
-router.get("/new", (req, res) => {
-  res.render("listings/new.ejs");
-});
+router.get("/new", isLoggedIn, listingController.renderNewForm); // listingController.renderNewForm is a function that will be called when the route is hit. It will render the new.ejs file.
 
 // Create New Route
 router.post(
   "/",
-  validateListing,
-  wrapAsync(async (req, res, next) => {
-    // const {title, description, image, price, location, country} = req.body;
-    const newListing = new Listing(req.body.listing);
-    await newListing.save();
-    req.flash("success", "Successfully Created a New Listing!");    // flash messaage whenever a new listing is created
-    res.redirect("/listings");
-  })
+  isLoggedIn,
+  validateListing, // for listing validation (server-side validation using joi package)
+  wrapAsync(listingController.createListing) // listingController.createListing is a function that will be called when the route is hit. It will create a new listing and save it to the database.
 );
 
 // Show Route (showing all the data of the indvidual listing)
 router.get(
   "/:id",
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews"); // populating the reviews field in the listing
-    if (!listing) {
-      req.flash("error", "Listing Not Found!"); // flash message when the listing is not found
-      return res.redirect("/listings");
-    }
-    res.render("listings/show.ejs", { listing });
-  })
+  wrapAsync(listingController.showListing)  // listingController.showListing is a function that will be called when the route is hit. It will create a new listing and save it to the database.
 );
 
 // Edit Rotue
 router.get(
   "/:id/edit",
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id);
-    if(!listing) {
-      req.flash("error", "Listing Not Found!"); // flash message when the listing is not found
-      return res.redirect("/listings");   
-    }
-    res.render("listings/edit.ejs", { listing });
-  })
+  isLoggedIn,
+  isOwner,
+  wrapAsync(listingController.renderEditForm) // listingController.renderEditForm is a function that will be called when the route is hit. It will render the edit.ejs file.
 );
 
 // Update Route
 router.put(
   "/:id",
+  isLoggedIn,
+  isOwner, // for checking if the user is the owner of the listing (if not then redirect to the listing page)
   validateListing,
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    const editedListing = req.body.listing;
-    await Listing.findByIdAndUpdate(
-      id,
-      { ...editedListing },
-      { new: true, runValidators: true }
-    );
-    req.flash("success", "Listing Updated!");
-    res.redirect(`/listings/${id}`);
-  })
+  wrapAsync(listingController.updateListing) // listingController.updateListing is a function that will be called when the route is hit. It will update the listing and save it to the database.
 );
 
 // Delete Route
-router.delete(   
+router.delete(
   "/:id",
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    await Listing.findByIdAndDelete(id); // when this findByIdAndDelete is called, then the listing will be deleted and the post middleware of listingSchema will be called and all the reviews associated with it will also be deleted
-    req.flash("success", "Listing Deleted!");    // flash messaage whenever a new listing is created
-    res.redirect("/listings");
-  })
+  isLoggedIn,
+  isOwner,
+  wrapAsync(listingController.destroyListing) // listingController.destroyListing is a function that will be called when the route is hit. It will delete the listing from the database.
 );
-
 
 module.exports = router;
