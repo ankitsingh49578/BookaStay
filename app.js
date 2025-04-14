@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV != "production") { // for environment variables (dotenv package)
+  require("dotenv").config(); // for environment variables (dotenv package)
+}
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -30,11 +34,12 @@ async function main() {
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // app.use(express.json());
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.json({limit: '10mb'})); 
 
 const sessionOptions = {
   secret: "thisshouldbeasecret",
@@ -93,6 +98,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error.ejs", { message });
 });
 
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log("Listening at 3000");
 });
+server.setTimeout(30000); // for timeout (for 30 sec) (if the server is idle for 5 minutes then it will be closed automatically)

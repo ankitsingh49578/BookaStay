@@ -21,10 +21,13 @@ module.exports.showListing = async (req, res) => {
   res.render("listings/show.ejs", { listing });
 };
 
-module.exports.createListing = async (req, res, next) => {
+module.exports.createListing = async (req, res) => {
+  let url = req.file.path;
+  let filename = req.file.filename;
   // const {title, description, image, price, location, country} = req.body;
   const newListing = new Listing(req.body.listing);
   newListing.owner = req.user._id; // adding the owner of the listing (user id) to the listing
+  newListing.image = {url, filename}; // adding the image to the listing (image is the name of the input field in the form)
   await newListing.save();
   req.flash("success", "Successfully Created a New Listing!"); // flash messaage whenever a new listing is created
   res.redirect("/listings");

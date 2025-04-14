@@ -9,12 +9,8 @@ const listingSchema = new Schema({
   },
   description: String,
   image: {
-    type: String,
-    default: "https://wallpapers.com/images/high/beautiful-place-pictures-njspr18qy1g3fzan.webp",     // default image(if image is not provided)
-    set: (v) =>        // setting image if a empty image is provided ("")
-      v === ""
-        ? "https://wallpapers.com/images/high/beautiful-place-pictures-njspr18qy1g3fzan.webp"
-        : v,
+    url: String, // URL of the image
+    filename: String, // filename of the image
   },
   price: Number,
   location: String,

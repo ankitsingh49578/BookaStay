@@ -12,15 +12,17 @@
             <div class="col-8 offset-2">
                 <br>
                 <h3 class="mb-3">Create New Listing </h3>
-                <form method="POST" action="/listings" novalidate class="needs-validation">
+                <form method="POST" action="/listings" novalidate class="needs-validation"
+                    enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
-                        <input required type="text" placeholder="Enter title" name="listing[title]" class="form-control">
+                        <input required type="text" placeholder="Enter title" name="listing[title]"
+                            class="form-control">
                         <div class="valid-feedback">
                             Looks good!
                         </div>
                     </div>
-                    <div>
+                    <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
                         <textarea required rows="3" name="listing[description]" placeholder="Enter your details here..."
                             class="form-control"></textarea>
@@ -29,20 +31,22 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="image" class="form-label">Image Link</label>
-                        <input type="text" placeholder="Image URL/Link here" name="listing[image]" class="form-control">
+                        <label for="image" class="form-label">Upload Image</label>
+                        <input type="file" placeholder="" name="listing[image]" class="form-control">
                     </div>
                     <div class="row">
                         <div class="mb-3 col-md-5">
                             <label for="price" class="form-label">Price</label>
-                            <input required type="number" placeholder="eg. 5000" name="listing[price]" class="form-control">
+                            <input required type="number" placeholder="eg. 5000" name="listing[price]"
+                                class="form-control">
                             <div class="invalid-feedback">
                                 Price should be added!
                             </div>
                         </div>
                         <div class="mb-3 col-md-7">
                             <label for="country" class="form-label">Country</label>
-                            <input required type="text" placeholder="eg. India" name="listing[country]" class="form-control">
+                            <input required type="text" placeholder="eg. India" name="listing[country]"
+                                class="form-control">
                             <div class="invalid-feedback">
                                 Country should be added!
                             </div>
@@ -50,7 +54,8 @@
                     </div>
                     <div class="mb-4">
                         <label for="location" class="form-label">Location</label>
-                        <input required type="text" placeholder="eg. Mumbai" name="listing[location]" class="form-control">
+                        <input required type="text" placeholder="eg. Mumbai" name="listing[location]"
+                            class="form-control">
                         <div class="invalid-feedback">
                             Location should be added!
                         </div>
