@@ -24,6 +24,17 @@ const listingSchema = new Schema({
   owner: {
     type: Schema.Types.ObjectId,    // ObjectId type for the owner
     ref: "User",    // reference to the User model
+  },
+  geometry:{    // this is used to store the location of the listing in the database (took from mongoose documentation)
+    type: {
+      type: String,
+      enum: ["Point"],    // 'location' is the only type supported
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
   }
 });
 

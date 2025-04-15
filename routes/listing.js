@@ -17,7 +17,7 @@ router
   // Create New Route
   .post(
     isLoggedIn,
-    upload.single("listing[image]"), // for uploading a single image (image is the name of the input field in the form) (multer middleware)
+    upload.single("listing[image]"), // for uploading a single image (image is the name of the input field in the form) (multer middleware) what does this do
     validateListing, // for listing validation (server-side validation using joi package)
     wrapAsync(listingController.createListing) // listingController.createListing is a function that will be called when the route is hit. It will create a new listing and save it to the database.
   );
@@ -35,6 +35,7 @@ router
   .put(
     isLoggedIn,
     isOwner, // for checking if the user is the owner of the listing (if not then redirect to the listing page)
+    upload.single("listing[image]"),
     validateListing,
     wrapAsync(listingController.updateListing) // listingController.updateListing is a function that will be called when the route is hit. It will update the listing and save it to the database.
   )

@@ -16,3 +16,35 @@
       }, false)
     })
   })()
+
+  const swiper = new Swiper('.swiper', {
+    loop: false,
+    grabCursor: true,
+    // spaceBetween: 0,
+  
+    // If we need pagination
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+      dynamicBullets: true
+    },
+  
+    // Navigation arrows
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+
+    breakpoints: {
+      0: {
+        slidesPerView: 4
+      },
+      620: {
+        slidesPerView: 6
+      },
+      1024: {
+        slidesPerView: 8
+      }
+    }
+  
+  });
