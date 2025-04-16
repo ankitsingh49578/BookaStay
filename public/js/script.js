@@ -20,7 +20,7 @@
   const swiper = new Swiper('.swiper', {
     loop: false,
     grabCursor: true,
-    // spaceBetween: 0,
+    spaceBetween: 20,
   
     // If we need pagination
     pagination: {
@@ -39,8 +39,8 @@
       0: {
         slidesPerView: 4
       },
-      620: {
-        slidesPerView: 6
+      768: {
+        slidesPerView: 5
       },
       1024: {
         slidesPerView: 8
@@ -48,3 +48,17 @@
     }
   
   });
+
+// With Tax toggle button
+  let taxSwitch = document.getElementById('switchCheckDefault');
+  taxSwitch.addEventListener("click", () =>{
+      let taxInfo = document.getElementsByClassName('tax-info');
+      for(info of taxInfo){
+          if(info.style.display != "inline"){
+              info.style.display = "inline";
+          }
+          else{
+              info.style.display = "none";
+          }
+      }
+  })

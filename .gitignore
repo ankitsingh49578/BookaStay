@@ -1,0 +1,4 @@
+# Files which we want to be ignored (means these files will not push in github)
+
+.env            
+node_modules/

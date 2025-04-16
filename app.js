@@ -12,6 +12,7 @@ const ExpressError = require("./utils/ExpressError.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const session = require('express-session');       // for session management
+const MongoStore = require('connect-mongo');      // MongoDB session store for Connect and Express
 const flash = require('connect-flash');         // for flash messages
 const passport = require('passport');       // for authentication (passportjs.org)
 const LocalStrategy = require('passport-local'); // for local authentication 
@@ -19,6 +20,7 @@ const User = require('./models/user.js');
 const userRouter = require("./routes/user.js"); // for user model (user.js) 
 
 
+const dbUrl = process.env.ATLASDB_URL;
 // Connection with DataBase
 const MONGO_URL = "mongodb://127.0.0.1:27017/bookastay";
 main()
@@ -28,7 +30,7 @@ main()
   .catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect(MONGO_URL);
+  await mongoose.connect(dbUrl);
   // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
 }
 
@@ -41,8 +43,22 @@ app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.json({limit: '10mb'})); 
 
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  touchAfter: 24*3600,   // Don't resave the session to the database unless it was modified or 24hours time has passed since the last save.
+});
+
+store.on("error", (err)=>{
+  console.log("ERROR IN MONGO SESSION STORE". err);
+})
+
+// by using mongoStore our session info will store in the atlas DB (Online DB not in our systems mongodb Database)
 const sessionOptions = {
-  secret: "thisshouldbeasecret",
+  store,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -56,6 +72,7 @@ const sessionOptions = {
 // app.get("/", (req, res) => {
 //   res.send("Hey, This is Home page");
 // });
+
 
 app.use(session(sessionOptions)); // for session management
 app.use(flash()); // for flash messages (it should come before listings route)
