@@ -14,7 +14,7 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: 'Book-A-Stay', // The name of the folder in cloudinary
-        allowed_formats: ['jpeg', 'png', 'jpg'], // The allowed formats for the images
+        allowed_formats: ['jpeg', 'png', 'jpg', 'avif'], // The allowed formats for the images
     },
 });
 
