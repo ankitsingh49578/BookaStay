@@ -41,7 +41,7 @@ module.exports.createListing = async (req, res) => {
   newListing.geometry = response.body.features[0].geometry; // this is used to get the coordinates of the location which is added (mapbox api)
 
   let savedListing = await newListing.save();
-  console.log(savedListing);
+  // console.log(savedListing);
   req.flash("success", "Successfully Created a New Listing!"); // flash messaage whenever a new listing is created
   res.redirect("/listings");
 };

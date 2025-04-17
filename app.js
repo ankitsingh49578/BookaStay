@@ -114,8 +114,8 @@ app.use((err, req, res, next) => {
   // res.status(statusCode).send(message);
   res.status(statusCode).render("error.ejs", { message });
 });
-
-const server = app.listen(3000, () => {
-  console.log("Listening at 3000");
+let PORT = 3000 || 8080;
+const server = app.listen(PORT, () => {
+  console.log("Listening at ", PORT);
 });
 server.setTimeout(30000); // for timeout (for 30 sec) (if the server is idle for 5 minutes then it will be closed automatically)
