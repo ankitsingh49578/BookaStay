@@ -68,6 +68,15 @@ body {
 .f-info-socials {
   width: 100%;
 }
+.f-info-socials a {
+  color: black;
+  transition: all ease;
+}
+.f-info-socials a i:hover {
+  color: black;
+  scale: 1.2;
+  transition-duration: 300ms;
+}
 .f-info-socials i {
   font-size: 1.2rem;
   margin-right: 1rem;
@@ -76,10 +85,11 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  height: 8rem;
+  height: 6.5rem;
   background-color: gainsboro;
   text-align: center;
   align-items: center;
+  padding: 10px 0;
 }
 
 /* Card */
@@ -174,6 +184,11 @@ body {
   }
   .navbar-nav{
     gap: 5px;
+  }
+  .listing-card{
+    width: 85%;
+    margin: auto;
+    margin-bottom: 2rem;
   }
 
   #map{
