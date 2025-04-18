@@ -6,13 +6,14 @@ body {
 }
 .container {
   flex: 1;
+  /* margin: 0 !important; */
 }
 
 /* Navbar */
 .navbar {
   height: 5rem;
-  padding-left: 8px !important;
-  padding-right: 2rem !important;
+  padding-left: 4px !important;
+  padding-right: 16px !important;
   background-color: white;
 }
 .logo{
@@ -21,15 +22,15 @@ body {
   border-radius: 50%;
 }
 .search-input{
-  width: 220px !important;
+  width: 260px !important;
   border-radius: 20px !important;
-  font-size: 14px !important;
+  font-size: 18px !important;
 }
 .search-btn{
   background-color: rgb(27, 175, 234) !important;
   color: white !important;
   border-radius: 20px !important;
-  font-size: 14px !important;
+  font-size: 16px !important;
 }
 .search-btn i{
   display: inline;
@@ -40,14 +41,17 @@ body {
 }
 .nav-link {
   color: black !important;
-  border: 1px solid rgb(198, 192, 192) !important;
+  /* border: 1px solid rgb(240, 237, 237) !important; */
   border-radius: 5px;
-  font-size: 15px !important;
+  font-size: 18px !important;
 }
 .nav-link:hover {
   color: white !important;
   background-color: rgb(50, 179, 230);
   border-radius: 5px;
+}
+.navbar-nav{
+  gap: 18px
 }
 
 /* Footer */
@@ -79,6 +83,7 @@ body {
 }
 
 /* Card */
+
 .listing-card {
   border: none !important;
   margin-bottom: 2rem;
@@ -139,7 +144,40 @@ body {
 
 /* Map Styling */
 #map {
-    height: 400px;
-    width: 50vw;
+    height: 350px;
+    width: 40vw;
     border-radius: 10px;
+}
+
+
+@media(max-width: 768px){
+  .navbar {
+      padding: 0 !important;
+  }
+  .logo{
+    width: 61px;
+  }
+  .navbar-collapse{
+    background-color: white;
+    padding: 15px 0 !important;
+    margin: 0 -5px;
+  }
+  .search{
+    display: none !important;
+  }
+  #explore{
+    margin-bottom: 5px;
+  }
+  .nav-link{
+    border: none !important;
+    padding: 10px !important;
+  }
+  .navbar-nav{
+    gap: 5px;
+  }
+
+  #map{
+    width: 80vw;
+    height: 300px;
+  }
 }

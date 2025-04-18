@@ -5,12 +5,12 @@
 </script>
 
 <div class="row">
-    <div class="col-8 offset-3 my-3">
+    <div class="col-12 col-lg-8 offset-lg-3 my-3">
         <h3>
             <%= listing.title %>
         </h3>
     </div>
-    <div class="card listing-card col-6 offset-3">
+    <div class="card listing-card col-12 col-lg-6 offset-lg-3">
         <img src="<%= listing.image.url %>" class="show-img mb-2" alt="listing_image">
         <div class="card-body">
             <p class="card-text"><i>Owner: <%=listing.owner.username%></i></p>
@@ -28,7 +28,7 @@
     </div>
     <% if(currUser && currUser._id.equals(listing.owner._id)){ %>
         <div class="btns">
-            <a class="btn btn-dark col-1 offset-3 edit-btn" href="/listings/<%= listing._id %>/edit"> <!--GET Req-->
+            <a class="btn btn-dark col-4 col-md-2 col-lg-1 offset-lg-3 edit-btn" href="/listings/<%= listing._id %>/edit"> <!--GET Req-->
                 Edit
             </a>
             <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
@@ -37,7 +37,7 @@
         </div>
     <% } %>
 
-    <div class="col-8 offset-3 my-3">
+    <div class="col-12 col-lg-8 offset-lg-3 my-3">
         <% if(currUser){ %>
             <hr>
             <h4>Write a review</h4>
@@ -78,7 +78,7 @@
             <div class="row mt-4">
                 <h4 class="mb-4"><b>All Reviews</b></h4>
                 <% for(review of listing.reviews) {%>
-                    <div class="card col-5 ms-5 mb-3 p-2 px-2">
+                    <div class="card col-10 col-lg-5 ms-3 ms-lg-5 mb-3 p-2 px-2">
                         <div class="card-body">
                             <div class="stars">
                                 <h5 class="card-title">@<%= review.author.username %>
@@ -104,9 +104,9 @@
         <% } %>
     </div>
 
-    <div class="col-8 offset-3" >
+    <div class="col-12 col-lg-8 offset-lg-3" >
         <h3>Where you'll be</h3>
-        <div id="map"></div>
+        <div id="map" class="ms-3"></div>
     </div>
     
 </div><br>
